@@ -1,5 +1,5 @@
 #include "logincmd.h"
-#include "msgbody.pb.h"
+#include "buff/msgbody.pb.h"
 
 void LoginCmd::exec(sClientMsg* msg)
 {

@@ -75,3 +75,15 @@ $RECYCLE.BIN/
 *.lnk
 *.sdf
 *.suo
+*.cache
+*.manifest
+*.ilk
+*.lastbuildstate
+*.exp
+*.log
+*.pdb
+*.tlog
+*.opensdf
+*.unsuccessfulbuild
+*.ipch
+*.idb

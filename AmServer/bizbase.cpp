@@ -1,6 +1,6 @@
 #include "bizbase.h"
 #include "cmdbase.h"
-#include "commands.h"
+#include "include/commands.h"
 #include "logincmd.h"
 
 void BizBase::exec(sClientMsg* msg)

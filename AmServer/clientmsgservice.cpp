@@ -1,7 +1,7 @@
 
 #include "ace/OS_NS_unistd.h"
 #include "clientmsgservice.h"
-#include "commands.h"
+#include "include/commands.h"
 #include "defines.h"
 
 void ClientMsgService::start()
