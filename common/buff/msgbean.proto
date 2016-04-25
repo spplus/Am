@@ -1,0 +1,9 @@
+package com.spplus.buff;
+message UserBean
+{ 
+
+    optional bytes userid  = 1;
+    optional bytes username= 2;
+    optional bytes userrole= 3;  
+
+}

@@ -1,0 +1,35 @@
+import "msgbean.proto";
+package com.spplus.buff;
+message UserLoginMsg
+{ 
+	//请求体定义
+	message Request {
+		optional bytes	username	= 1;			
+		optional bytes	userpwd		= 2;		
+  	}
+  	//响应体定义
+	message Response {
+		optional uint32	rescode		= 1;	// 0 成功，其他失败
+  	}
+	optional Request 	request 	= 1;
+  	optional Response 	response 	= 2;
+  
+}
+
+message UserListMsg
+{ 
+	//请求体定义
+	message Request {
+		optional bytes	reqdate	= 1;		// 请求日期，可以不填					
+  	}
+  	//响应体定义
+	message Response {
+		
+		optional uint32		rescode		= 1;	// 0 成功，其他失败
+		repeated UserBean	userlist	= 2;	// 用户列表
+  	}
+	optional Request 	request 	= 1;
+  	optional Response 	response 	= 2;
+  
+}
+
