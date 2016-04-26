@@ -9,8 +9,8 @@
 
 
 
-#ifndef HP_LOGGER_ACE_H_
-#define HP_LOGGER_ACE_H_
+#ifndef __LOGGER_ACE_H_
+#define __LOGGER_ACE_H_
 
 #include <stdarg.h>
 
@@ -27,39 +27,39 @@ using namespace std;
 #define DEFAULT_SAVED_MONTH		6
 
 /*日志级别 - 控制日志显示的级别*/
-#define HP_LOGLEVEL_ERROR		0x00				/*错误*/
-#define HP_LOGLEVEL_WARN		0x01				/*警告*/
-#define HP_LOGLEVEL_MESSAGE		0x02				/*提示*/
-#define HP_LOGLEVEL_DEBUG		0x03				/*调试*/
+#define LOGLEVEL_ERROR		0x00				/*错误*/
+#define LOGLEVEL_WARN		0x01				/*警告*/
+#define LOGLEVEL_MESSAGE		0x02				/*提示*/
+#define LOGLEVEL_DEBUG		0x03				/*调试*/
 
 /*日志媒体 - 控制日志输出的媒体*/
-#define HP_LOGMEDIA_SCREEN		0x00				/*屏幕*/
-#define HP_LOGMEDIA_FILE		0x01				/*文件*/
-#define HP_LOGMEDIA_ALL			0x02				/*全部*/
+#define LOGMEDIA_SCREEN		0x00				/*屏幕*/
+#define LOGMEDIA_FILE		0x01				/*文件*/
+#define LOGMEDIA_ALL			0x02				/*全部*/
 
 /*日志队列状态*/
-#define HP_LOGCLEANER_CLOSED	0x00				/*日志清理关*/
-#define HP_LOGCLEANER_OPEN		0x01				/*日志清理开*/
+#define LOGCLEANER_CLOSED	0x00				/*日志清理关*/
+#define LOGCLEANER_OPEN		0x01				/*日志清理开*/
 
 /*日志文件*/
-#define HP_LOG_MAX_NAMESIZE		255					/*最大文件名长度*/
+#define LOG_MAX_NAMESIZE		255					/*最大文件名长度*/
 
-#define HP_LOG_FILEDIR "log"						/*默认文件根目录*/
-#define HP_LOG_FILENAME "syslog"					/*默认日志文件名*/
-#define HP_LOG_FILETYPE ".log"						/*默认扩展名*/
-#define HP_LOG_MAX_FILESIZE (32*1024*1024)			/*最大日志文件大小32M*/
+#define LOG_FILEDIR "log"						/*默认文件根目录*/
+#define LOG_FILENAME "syslog"					/*默认日志文件名*/
+#define LOG_FILETYPE ".log"						/*默认扩展名*/
+#define LOG_MAX_FILESIZE (32*1024*1024)			/*最大日志文件大小32M*/
 
-#define HP_LOG_GRP_ID			96469
-#define HP_LOG_INPUT_SIZE		(200*1024)			/*单个日志最大字节数*/
-#define HP_LOG_SEND_HIGHT_MARK	(1024*1024)			/*日志队列满负荷能力*/
+#define LOG_GRP_ID			96469
+#define LOG_INPUT_SIZE		(200*1024)			/*单个日志最大字节数*/
+#define LOG_SEND_HIGHT_MARK	(1024*1024)			/*日志队列满负荷能力*/
 
 /*配置参数定义*/
-#define HP_LOG_CONF_SECTION       "LOGGER"
-#define HP_LOG_CONF_LOGFILEDIR    "LOGFILEDIR"
-#define HP_LOG_CONF_LOGMEDIA      "LOGMEDIA"
-#define HP_LOG_CONF_LOGLEVEL      "LOGLEVEL"
-#define HP_LOG_CONF_LOGCLEANER    "LOGCLEANER"
-#define HP_LOG_CONF_LOGSAVEDMONTH "LOGSAVEDMONTH"
+#define LOG_CONF_SECTION       "LOGGER"
+#define LOG_CONF_LOGFILEDIR    "LOGFILEDIR"
+#define LOG_CONF_LOGMEDIA      "LOGMEDIA"
+#define LOG_CONF_LOGLEVEL      "LOGLEVEL"
+#define LOG_CONF_LOGCLEANER    "LOGCLEANER"
+#define LOG_CONF_LOGSAVEDMONTH "LOGSAVEDMONTH"
 
 
 /********************************************************************************************
@@ -70,15 +70,15 @@ class Logger : public ACE_Task<ACE_MT_SYNCH>
 public:
 	Logger() : active_(false)
 	{
-		this->media_ = HP_LOGMEDIA_ALL;
-		this->level_ = HP_LOGLEVEL_DEBUG;
-		this->cleaner_switch_ = HP_LOGCLEANER_OPEN;
+		this->media_ = LOGMEDIA_ALL;
+		this->level_ = LOGLEVEL_DEBUG;
+		this->cleaner_switch_ = LOGCLEANER_OPEN;
 		this->saved_month_ = DEFAULT_SAVED_MONTH;
 		ACE_OS::memset(this->parentdir_, 0x00, sizeof(this->parentdir_));
 		ACE_OS::memset(this->filedir_, 0x00, sizeof(this->filedir_));
 		ACE_OS::memset(this->filename_, 0x00, sizeof(this->filename_));
 		ACE_OS::memset(this->fullpath_, 0x00, sizeof(this->fullpath_));
-		this->msg_queue()->high_water_mark( HP_LOG_SEND_HIGHT_MARK);
+		this->msg_queue()->high_water_mark( LOG_SEND_HIGHT_MARK);
 	}
 
 	virtual ~Logger()
@@ -98,7 +98,7 @@ public:
 	* output:	NONE
 	* return:	NONE
 	*-----------------------------------------------------------------------*/
-	void	init_logger(const char * _fdir, unsigned int _media = HP_LOGMEDIA_ALL, unsigned int _level = HP_LOGLEVEL_DEBUG, int _cleaner_switch = HP_LOGCLEANER_CLOSED, int _saved_month = DEFAULT_SAVED_MONTH);
+	void	init_logger(const char * _fdir, unsigned int _media = LOGMEDIA_ALL, unsigned int _level = LOGLEVEL_DEBUG, int _cleaner_switch = LOGCLEANER_CLOSED, int _saved_month = DEFAULT_SAVED_MONTH);
 
 	/*-----------------------------------------------------------------------
 	* name:		初始化日志系统
@@ -284,10 +284,10 @@ public:
 	int cleaner_switch_; /*日志清理开关，=1时有效*/
 	int saved_month_;    /*日志保存月数，=0表示不删除，要求小于120*/
 
-	char parentdir_[HP_LOG_MAX_NAMESIZE];   /*日志文件根目录*/
-	char filedir_  [HP_LOG_MAX_NAMESIZE];   /*日志文件目录, 包括根目录、子目录*/
-	char filename_ [HP_LOG_MAX_NAMESIZE];   /*日志文件名,不包含目录*/
-	char fullpath_ [HP_LOG_MAX_NAMESIZE*2]; /*日志文件全路径名，包括目录和文件名*/
+	char parentdir_[LOG_MAX_NAMESIZE];   /*日志文件根目录*/
+	char filedir_  [LOG_MAX_NAMESIZE];   /*日志文件目录, 包括根目录、子目录*/
+	char filename_ [LOG_MAX_NAMESIZE];   /*日志文件名,不包含目录*/
+	char fullpath_ [LOG_MAX_NAMESIZE*2]; /*日志文件全路径名，包括目录和文件名*/
 
 	ACE_FILE_IO fp_;
 

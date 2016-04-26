@@ -26,7 +26,7 @@ int ClientHandler::open(void*p)
 		return -1;
 	}
 
-	LOG->message("new client connection：%s",svraddr.get_host_addr());
+	LOG->message("new client connection：%s:%d",svraddr.get_host_addr(),svraddr.get_port_number());
 
 	// 保存客户端连接
 	m_connectId = App_ClientMgr::instance()->add(this);

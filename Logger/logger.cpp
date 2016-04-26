@@ -43,7 +43,7 @@ void Logger::init_logger(const char * _fdir, unsigned int _media, unsigned int _
 	ACE_OS::strncpy(this->parentdir_, _fdir, sizeof(this->parentdir_));
 	if (ACE_OS::strlen(this->parentdir_) <= 0)
 	{
-		ACE_OS::sprintf(this->parentdir_, "%s",HP_LOG_FILEDIR);
+		ACE_OS::sprintf(this->parentdir_, "%s",LOG_FILEDIR);
 	}
 }
 
@@ -63,7 +63,7 @@ int Logger::open_logger()
 
 	/*创建根目录*/
 	if (ACE_OS::strlen(this->parentdir_) <= 0)
-		ACE_OS::sprintf(this->parentdir_, "%s",HP_LOG_FILEDIR);
+		ACE_OS::sprintf(this->parentdir_, "%s",LOG_FILEDIR);
 	if (this->mkdir(this->parentdir_) < 0)
 	{
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) Create root dir：'%s' failed\n"), this->parentdir_), -1);
@@ -106,7 +106,7 @@ int Logger::open_logger()
 			this, /*arguments*/
 			THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED, /*New Light Weight Process*/
 			ACE_DEFAULT_THREAD_PRIORITY,
-			HP_LOG_GRP_ID)==-1) /*Group ID*/
+			LOG_GRP_ID)==-1) /*Group ID*/
 			ACE_ERROR((LM_ERROR, "Failure to spawn first group of threads: %p \n"));
 	}
 	
@@ -123,8 +123,8 @@ void Logger::close_logger()
 {
 	this->active_ = false;
 
-	ACE_Thread_Manager::instance()->cancel_grp(HP_LOG_GRP_ID);
-	ACE_Thread_Manager::instance()->wait_grp(HP_LOG_GRP_ID);
+	ACE_Thread_Manager::instance()->cancel_grp(LOG_GRP_ID);
+	ACE_Thread_Manager::instance()->wait_grp(LOG_GRP_ID);
 
 	this->msg_queue()->close();
 	this->wait();
@@ -157,13 +157,13 @@ int Logger::load_config(const char * _config_filename)
 	}
 
 	ACE_Configuration_Section_Key status_section;
-	if (config.open_section (config.root_section(),ACE_TEXT(HP_LOG_CONF_SECTION), 0, status_section) == -1)
+	if (config.open_section (config.root_section(),ACE_TEXT(LOG_CONF_SECTION), 0, status_section) == -1)
 	{
 		ACE_ERROR_RETURN ((LM_ERROR, ACE_TEXT("(%P|%t) %p\n"), ACE_TEXT ("Can't open [LOGGER] section")), -1);
 	}
 
 	/*日志输出根路径*/
-	if (config.get_string_value(status_section, ACE_TEXT(HP_LOG_CONF_LOGFILEDIR), str) != -1)
+	if (config.get_string_value(status_section, ACE_TEXT(LOG_CONF_LOGFILEDIR), str) != -1)
 	{
 		if (str.length()>0 && str.c_str()[str.length()-1]!='/')
 		{
@@ -175,7 +175,7 @@ int Logger::load_config(const char * _config_filename)
 		}
 		if (ACE_OS::strcmp(str.c_str(), this->parentdir_) != 0)
 		{
-			//ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) [%s]->'%s' is updated (%s)->(%s)\n"),HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGFILEDIR, this->parentdir_, str.c_str()));
+			//ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) [%s]->'%s' is updated (%s)->(%s)\n"),LOG_CONF_SECTION, HP_LOG_CONF_LOGFILEDIR, this->parentdir_, str.c_str()));
 			ACE_OS::memset(this->parentdir_, 0x00, sizeof(this->parentdir_));
 			ACE_OS::strncpy(this->parentdir_, str.c_str(), sizeof(this->parentdir_));
 		}
@@ -185,107 +185,107 @@ int Logger::load_config(const char * _config_filename)
 	{
 		ACE_OS::memset(this->parentdir_, 0x00, sizeof(this->parentdir_));
 		ACE_OS::strncpy(this->parentdir_, "log", sizeof(this->parentdir_));
-		ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' does not exist, default value is (%s)\n"), HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGFILEDIR, this->parentdir_));
+		ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' does not exist, default value is (%s)\n"), LOG_CONF_SECTION, LOG_CONF_LOGFILEDIR, this->parentdir_));
 	}
 
 	/*日志输出媒体  0：屏幕  1：文件  2：屏幕+文件*/
-	if (config.get_string_value(status_section, ACE_TEXT(HP_LOG_CONF_LOGMEDIA), str) != -1)
+	if (config.get_string_value(status_section, ACE_TEXT(LOG_CONF_LOGMEDIA), str) != -1)
 	{
 		try
 		{
 			num = ACE_OS::strtol(str.c_str(), NULL, 10);
 			if (num != this->media_)
 			{
-				//ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) [%s]->'%s' is updated (%d)->(%d)\n"),HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGMEDIA, this->media_, num));
+				//ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) [%s]->'%s' is updated (%d)->(%d)\n"),LOG_CONF_SECTION, HP_LOG_CONF_LOGMEDIA, this->media_, num));
 				this->media_ = num;
 			}
 		}
 		catch (...)
 		{
 			this->media_ = 2;
-			ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' is catch exception, default value is (%d)\n"), HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGMEDIA, this->media_));
+			ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' is catch exception, default value is (%d)\n"), LOG_CONF_SECTION, LOG_CONF_LOGMEDIA, this->media_));
 		}
 		num = 0;
 	}
 	else
 	{
 		this->media_ = 2;
-		ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' does not exist, default value is (%d)\n"), HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGMEDIA, this->media_));
+		ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' does not exist, default value is (%d)\n"), LOG_CONF_SECTION, LOG_CONF_LOGMEDIA, this->media_));
 	}
 
 	/*日志打印级别  0：ERROR  1：WARN  2：MESSAGE  3：DEBUG*/
-	if (config.get_string_value(status_section, ACE_TEXT(HP_LOG_CONF_LOGLEVEL), str) != -1)
+	if (config.get_string_value(status_section, ACE_TEXT(LOG_CONF_LOGLEVEL), str) != -1)
 	{
 		try
 		{
 			num = ACE_OS::strtol(str.c_str(), NULL, 10);
 			if (num != this->level_)
 			{
-				//ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) [%s]->'%s' is updated (%d)->(%d)\n"),HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGLEVEL, this->level_, num));
+				//ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) [%s]->'%s' is updated (%d)->(%d)\n"),LOG_CONF_SECTION, LOG_CONF_LOGLEVEL, this->level_, num));
 				this->level_ = num;
 			}
 		}
 		catch (...)
 		{
 			this->level_ = 3;
-			ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' is catch exception, default value is (%d)\n"), HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGLEVEL, this->level_));
+			ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' is catch exception, default value is (%d)\n"), LOG_CONF_SECTION, LOG_CONF_LOGLEVEL, this->level_));
 		}
 		num = 0;
 	}
 	else
 	{
 		this->level_ = 3;
-		ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' does not exist, default value is (%d)\n"), HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGLEVEL, this->level_));
+		ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' does not exist, default value is (%d)\n"), LOG_CONF_SECTION, LOG_CONF_LOGLEVEL, this->level_));
 	}
 
 	/*日志清理开关  1：开，0：关*/
-	if (config.get_string_value(status_section, ACE_TEXT(HP_LOG_CONF_LOGCLEANER), str) != -1)
+	if (config.get_string_value(status_section, ACE_TEXT(LOG_CONF_LOGCLEANER), str) != -1)
 	{
 		try
 		{
 			num = ACE_OS::strtol(str.c_str(), NULL, 10);
 			if (num != this->cleaner_switch_)
 			{
-				//ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) [%s]->'%s' is updated (%d)->(%d)\n"),HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGCLEANER, this->cleaner_switch_, num));
+				//ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) [%s]->'%s' is updated (%d)->(%d)\n"),LOG_CONF_SECTION, HP_LOG_CONF_LOGCLEANER, this->cleaner_switch_, num));
 				this->cleaner_switch_ = num;
 			}
 		}
 		catch (...)
 		{
 			this->cleaner_switch_ = 0;
-			ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' is catch exception, default value is (%d)\n"), HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGCLEANER, this->cleaner_switch_));
+			ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' is catch exception, default value is (%d)\n"), LOG_CONF_SECTION, LOG_CONF_LOGCLEANER, this->cleaner_switch_));
 		}
 		num = 0;
 	}
 	else
 	{
 		this->cleaner_switch_ = 0;
-		ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' does not exist, default value is (%d)\n"), HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGCLEANER, this->cleaner_switch_));
+		ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' does not exist, default value is (%d)\n"), LOG_CONF_SECTION, LOG_CONF_LOGCLEANER, this->cleaner_switch_));
 	}
 
 	/*日志保存月数，日志清理开时有效  0：表示不删除*/
-	if (config.get_string_value(status_section, ACE_TEXT(HP_LOG_CONF_LOGSAVEDMONTH), str) != -1)
+	if (config.get_string_value(status_section, ACE_TEXT(LOG_CONF_LOGSAVEDMONTH), str) != -1)
 	{
 		try
 		{
 			num = ACE_OS::strtol(str.c_str(), NULL, 10);
 			if (num != this->saved_month_)
 			{
-				//ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) [%s]->'%s' is updated (%d)->(%d)\n"),HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGSAVEDMONTH, this->saved_month_, num));
+				//ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) [%s]->'%s' is updated (%d)->(%d)\n"),LOG_CONF_SECTION, LOG_CONF_LOGSAVEDMONTH, this->saved_month_, num));
 				this->saved_month_ = num;
 			}
 		}
 		catch (...)
 		{
 			this->saved_month_ = 0;
-			ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' is catch exception, default value is (%d)\n"), HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGSAVEDMONTH, this->saved_month_));
+			ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' is catch exception, default value is (%d)\n"), LOG_CONF_SECTION, LOG_CONF_LOGSAVEDMONTH, this->saved_month_));
 		}
 		num = 0;
 	}
 	else
 	{
 		this->saved_month_ = 0;
-		ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' does not exist, default value is (%d)\n"), HP_LOG_CONF_SECTION, HP_LOG_CONF_LOGSAVEDMONTH, this->saved_month_));
+		ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) [%s]->'%s' does not exist, default value is (%d)\n"), LOG_CONF_SECTION, LOG_CONF_LOGSAVEDMONTH, this->saved_month_));
 	}
 
 	return 1;
@@ -345,7 +345,7 @@ int Logger::rmdir(const char * _fdir)
 int Logger::check_subdir(const char * _fdir)
 {
 	int ret;
-	char _subdir[ HP_LOG_MAX_NAMESIZE];
+	char _subdir[ LOG_MAX_NAMESIZE];
 
 	if (_fdir == NULL) return -1;
 
@@ -452,11 +452,11 @@ void Logger::create_filename(char * _filename)
 	}
 	else
 	{
-		plogname = HP_LOG_FILENAME;
+		plogname = LOG_FILENAME;
 	}
 	
 	ACE_OS::sprintf(_str, "%02d_%02d_%02d", p->tm_year+1900, p->tm_mon+1, p->tm_mday);
-	ACE_OS::sprintf(_filename, "%s_%s%s",plogname, _str,HP_LOG_FILETYPE);
+	ACE_OS::sprintf(_filename, "%s_%s%s",plogname, _str,LOG_FILETYPE);
 }
 
 /*-----------------------------------------------------------------------
@@ -469,16 +469,16 @@ void Logger::getloglevel(int _var_log_level, char * _level)
 {
 	switch (_var_log_level)
 	{
-	case HP_LOGLEVEL_ERROR:
+	case LOGLEVEL_ERROR:
 		ACE_OS::sprintf(_level, "ERROR");
 		break;
-	case HP_LOGLEVEL_WARN:
+	case LOGLEVEL_WARN:
 		ACE_OS::sprintf(_level, "WARN ");
 		break;
-	case HP_LOGLEVEL_DEBUG:
+	case LOGLEVEL_DEBUG:
 		ACE_OS::sprintf(_level, "DEBUG");
 		break;
-	case HP_LOGLEVEL_MESSAGE:
+	case LOGLEVEL_MESSAGE:
 		ACE_OS::sprintf(_level, "MSG  ");
 		break;
 	default:
@@ -515,7 +515,7 @@ void Logger::currenttime(char * _stime)
 *-----------------------------------------------------------------------*/
 int Logger::to_screen(const char * fmt)
 {
-	char _buff[HP_LOG_INPUT_SIZE] = {0};
+	char _buff[LOG_INPUT_SIZE] = {0};
 	ACE_OS::memset(_buff, 0, sizeof(_buff));
 	ACE_OS::sprintf(_buff, "%s\n",fmt);
 
@@ -539,7 +539,7 @@ int Logger::to_file(const char * fmt)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("logger not started.\n")), -1);
 		return -1;
 	}
-	char _buff[HP_LOG_INPUT_SIZE] = {0};
+	char _buff[LOG_INPUT_SIZE] = {0};
 	ACE_OS::memset(_buff, 0, sizeof(_buff));
 	ACE_OS::sprintf(_buff, "%s\n",fmt);
 
@@ -574,9 +574,9 @@ void Logger::error(const char * fmt, ...)
 	va_list ap;
 	char _level[8];
 	char _stime[24];
-	char _buff[ HP_LOG_INPUT_SIZE] = {0};
+	char _buff[ LOG_INPUT_SIZE] = {0};
 
-	if (this->level_ < HP_LOGLEVEL_ERROR) return;
+	if (this->level_ < LOGLEVEL_ERROR) return;
 
 	va_start(ap, fmt);
 
@@ -584,7 +584,7 @@ void Logger::error(const char * fmt, ...)
 	ACE_OS::memset(_stime, 0, sizeof(_stime));
 	ACE_OS::memset(_buff, 0, sizeof(_buff));
 
-	this->getloglevel(HP_LOGLEVEL_ERROR, _level);
+	this->getloglevel(LOGLEVEL_ERROR, _level);
 	this->currenttime(_stime);
 
 	ACE_OS::sprintf(_buff, "[%s] [%s]: ", _stime, _level);
@@ -592,14 +592,14 @@ void Logger::error(const char * fmt, ...)
 	
 	switch (this->media_)
 	{
-	case HP_LOGMEDIA_ALL:
+	case LOGMEDIA_ALL:
 		this->to_screen(_buff);
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_FILE:
+	case LOGMEDIA_FILE:
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_SCREEN:
+	case LOGMEDIA_SCREEN:
 	default:
 		this->to_screen(_buff);
 		break;
@@ -620,9 +620,9 @@ void Logger::warn(const char * fmt, ...)
 	va_list ap;
 	char _level[8];
 	char _stime[24];
-	char _buff[HP_LOG_INPUT_SIZE] = {0};
+	char _buff[LOG_INPUT_SIZE] = {0};
 
-	if (this->level_ < HP_LOGLEVEL_WARN) return;
+	if (this->level_ < LOGLEVEL_WARN) return;
 
 	va_start(ap, fmt);
 
@@ -630,7 +630,7 @@ void Logger::warn(const char * fmt, ...)
 	ACE_OS::memset(_stime, 0, sizeof(_stime));
 	ACE_OS::memset(_buff, 0, sizeof(_buff));
 
-	this->getloglevel(HP_LOGLEVEL_WARN, _level);
+	this->getloglevel(LOGLEVEL_WARN, _level);
 	this->currenttime(_stime);
 
 	ACE_OS::sprintf(_buff, "[%s] [%s]: ", _stime, _level);
@@ -638,14 +638,14 @@ void Logger::warn(const char * fmt, ...)
 
 	switch (this->media_)
 	{
-	case HP_LOGMEDIA_ALL:
+	case LOGMEDIA_ALL:
 		this->to_screen(_buff);
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_FILE:
+	case LOGMEDIA_FILE:
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_SCREEN:
+	case LOGMEDIA_SCREEN:
 	default:
 		this->to_screen(_buff);
 		break;
@@ -667,9 +667,9 @@ void Logger::message(const char * fmt, ...)
 	va_list ap;
 	char _level[8];
 	char _stime[24];
-	char _buff[HP_LOG_INPUT_SIZE] = {0};
+	char _buff[LOG_INPUT_SIZE] = {0};
 
-	if (this->level_ < HP_LOGLEVEL_MESSAGE) return;
+	if (this->level_ < LOGLEVEL_MESSAGE) return;
 
 	va_start(ap, fmt);
 
@@ -677,7 +677,7 @@ void Logger::message(const char * fmt, ...)
 	ACE_OS::memset(_stime, 0, sizeof(_stime));
 	ACE_OS::memset(_buff, 0, sizeof(_buff));
 
-	this->getloglevel(HP_LOGLEVEL_MESSAGE, _level);
+	this->getloglevel(LOGLEVEL_MESSAGE, _level);
 	this->currenttime(_stime);
 
 	ACE_OS::sprintf(_buff, "[%s] [%s]: ", _stime, _level);
@@ -685,14 +685,14 @@ void Logger::message(const char * fmt, ...)
 
 	switch (this->media_)
 	{
-	case HP_LOGMEDIA_ALL:
+	case LOGMEDIA_ALL:
 		this->to_screen(_buff);
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_FILE:
+	case LOGMEDIA_FILE:
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_SCREEN:
+	case LOGMEDIA_SCREEN:
 	default:
 		this->to_screen(_buff);
 		break;
@@ -713,9 +713,9 @@ void Logger::debug(const char * fmt, ...)
 	va_list ap;
 	char _level[8];
 	char _stime[24];
-	char _buff[HP_LOG_INPUT_SIZE] = {0};
+	char _buff[LOG_INPUT_SIZE] = {0};
 
-	if (this->level_ < HP_LOGLEVEL_DEBUG) return;
+	if (this->level_ < LOGLEVEL_DEBUG) return;
 
 	va_start(ap, fmt);
 
@@ -723,7 +723,7 @@ void Logger::debug(const char * fmt, ...)
 	ACE_OS::memset(_stime, 0, sizeof(_stime));
 	ACE_OS::memset(_buff, 0, sizeof(_buff));
 
-	this->getloglevel(HP_LOGLEVEL_DEBUG, _level);
+	this->getloglevel(LOGLEVEL_DEBUG, _level);
 	this->currenttime(_stime);
 
 	ACE_OS::sprintf(_buff, "[%s] [%s]: ", _stime, _level);
@@ -731,14 +731,14 @@ void Logger::debug(const char * fmt, ...)
 
 	switch (this->media_)
 	{
-	case HP_LOGMEDIA_ALL:
+	case LOGMEDIA_ALL:
 		this->to_screen(_buff);
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_FILE:
+	case LOGMEDIA_FILE:
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_SCREEN:
+	case LOGMEDIA_SCREEN:
 	default:
 		this->to_screen(_buff);
 		break;
@@ -757,7 +757,7 @@ void Logger::debug(const char * fmt, ...)
 void Logger::printf(const char * fmt, ...)
 {
 	va_list ap;
-	char _buff[HP_LOG_INPUT_SIZE] = {0};
+	char _buff[LOG_INPUT_SIZE] = {0};
 
 	va_start(ap, fmt);
 
@@ -767,14 +767,14 @@ void Logger::printf(const char * fmt, ...)
 
 	switch (this->media_)
 	{
-	case HP_LOGMEDIA_ALL:
+	case LOGMEDIA_ALL:
 		this->to_screen(_buff);
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_FILE:
+	case LOGMEDIA_FILE:
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_SCREEN:
+	case LOGMEDIA_SCREEN:
 	default:
 		this->to_screen(_buff);
 		break;
@@ -795,7 +795,7 @@ void Logger::dump(const char * _buf, size_t _size, int _type)
 {
 	char _level[24];
 	char _stime[24];
-	char _buff[HP_LOG_INPUT_SIZE] = {0};
+	char _buff[LOG_INPUT_SIZE] = {0};
 
 	ACE_OS::memset(_level, 0, sizeof(_level));
 	ACE_OS::memset(_stime, 0, sizeof(_stime));
@@ -829,14 +829,14 @@ void Logger::dump(const char * _buf, size_t _size, int _type)
 
 	switch (this->media_)
 	{
-	case HP_LOGMEDIA_ALL:
+	case LOGMEDIA_ALL:
 		this->to_screen(_buff);
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_FILE:
+	case LOGMEDIA_FILE:
 		this->to_file(_buff);
 		break;
-	case HP_LOGMEDIA_SCREEN:
+	case LOGMEDIA_SCREEN:
 	default:
 		this->to_screen(_buff);
 		break;
@@ -898,7 +898,7 @@ int Logger::svc(void)
 		/*判断当前路径，判断文件大小*/
 		ACE_FILE_Info finfo;
 		this->fp_.get_info(finfo);
-		if (this->check_subdir(this->parentdir_) > 0 || finfo.size_ > HP_LOG_MAX_FILESIZE)
+		if (this->check_subdir(this->parentdir_) > 0 || finfo.size_ > LOG_MAX_FILESIZE)
 		{
 			this->fp_.close();
 			this->create_filename(this->filename_);
@@ -935,7 +935,7 @@ static void * pthr_cleaner_process(void * arg)
 	time_t last_timep; /*上一次检测时间*/
 
 	char rm_year[4+1], rm_month[2+1]; /*待删除年月*/
-	char rm_dir[HP_LOG_MAX_NAMESIZE]; /*待删除目录路径*/
+	char rm_dir[LOG_MAX_NAMESIZE]; /*待删除目录路径*/
 	int c_year, c_month; /*当前年月*/
 
 	Logger * logger_0 = (Logger *)arg;
@@ -951,7 +951,7 @@ static void * pthr_cleaner_process(void * arg)
 
 	while (logger_0->get_active() == true)
 	{
-		if (logger_0->cleaner_switch_ != HP_LOGCLEANER_OPEN || logger_0->saved_month_ <= 0 || logger_0->saved_month_ >= 120)
+		if (logger_0->cleaner_switch_ != LOGCLEANER_OPEN || logger_0->saved_month_ <= 0 || logger_0->saved_month_ >= 120)
 		{
 			if (logger_0->saved_month_ <= 0 || logger_0->saved_month_ >= 120)
 			{

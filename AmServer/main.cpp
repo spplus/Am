@@ -6,7 +6,6 @@
 */
 /************************************************************************/
 #include "defines.h"
-#include "logger.h"
 #include "tcpservermgr.h"
 #include "scadaclientmgr.h"
 #include "dbaccess.h"
@@ -17,9 +16,11 @@ int ACE_TMAIN (int, ACE_TCHAR *[])
 	ACE::init();
 
 	// 启动日志
-	App_Logger::instance()->load_config(CONFIG_FILE);
+	/*App_Logger::instance()->load_config(CONFIG_FILE);
 	App_Logger::instance()->set_logname(LOGNAME);
-	App_Logger::instance()->open_logger();
+	App_Logger::instance()->open_logger();*/
+	LOG->start(LOGNAME);
+
 
 	// 加载服务器配置
 	if (!App_Config::instance()->load(SERVER_CONFIG))

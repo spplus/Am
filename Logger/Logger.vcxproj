@@ -11,12 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{70A278C9-C38B-4E42-8E92-789093E95BE5}</ProjectGuid>
-    <RootNamespace>AmServer</RootNamespace>
+    <ProjectGuid>{C5E46517-3893-4CDF-BE5B-BA4A740605B7}</ProjectGuid>
+    <RootNamespace>Logger</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -37,19 +37,23 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>../bin\</OutDir>
+    <OutDir>$(AM_ROOT)/lib</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ACE_ROOT);$(MYSQL_ROOT)/include;$(PB_ROOT)/include;$(AM_ROOT)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ACE_ROOT);$(AM_ROOT)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;AM_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ACE_ROOT)/lib;$(MYSQL_ROOT)/lib;$(PB_ROOT)/lib;$(AM_ROOT)/lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;libmysql.lib;mysqlclient.lib;libprotobufd.lib;loggerd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ACE_ROOT)/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(AM_ROOT)\lib\loggerd.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -66,45 +70,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\buff\msgbean.pb.cc" />
-    <ClCompile Include="..\common\buff\msgbody.pb.cc" />
-    <ClCompile Include="bizbase.cpp" />
-    <ClCompile Include="clienthandler.cpp" />
-    <ClCompile Include="clientmgr.cpp" />
-    <ClCompile Include="confmgr.cpp" />
-    <ClCompile Include="dbaccess.cpp" />
-    <ClCompile Include="keepAliveHandler.cpp" />
-    <ClCompile Include="logincmd.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="packetparser.cpp" />
-    <ClCompile Include="clientmsgservice.cpp" />
-    <ClCompile Include="recvTask.cpp" />
-    <ClCompile Include="scadahandler.cpp" />
-    <ClCompile Include="tcpClient.cpp" />
-    <ClCompile Include="scadaclientmgr.cpp" />
-    <ClCompile Include="tcpservermgr.cpp" />
+    <ClInclude Include="..\common\include\explog.h" />
+    <ClInclude Include="logger.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\buff\msgbean.pb.h" />
-    <ClInclude Include="..\common\buff\msgbody.pb.h" />
-    <ClInclude Include="bizbase.h" />
-    <ClInclude Include="clienthandler.h" />
-    <ClInclude Include="clientmgr.h" />
-    <ClInclude Include="cmdbase.h" />
-    <ClInclude Include="commands.h" />
-    <ClInclude Include="confmgr.h" />
-    <ClInclude Include="dbaccess.h" />
-    <ClInclude Include="defines.h" />
-    <ClInclude Include="keepAliveHandler.h" />
-    <ClInclude Include="logincmd.h" />
-    <ClInclude Include="packetparser.h" />
-    <ClInclude Include="clientmsgservice.h" />
-    <ClInclude Include="recvTask.h" />
-    <ClInclude Include="scadahandler.h" />
-    <ClInclude Include="structs.h" />
-    <ClInclude Include="tcpClient.h" />
-    <ClInclude Include="ScadaClientMgr.h" />
-    <ClInclude Include="tcpservermgr.h" />
+    <ClCompile Include="explog.cpp" />
+    <ClCompile Include="logger.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -202,8 +202,92 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\bk.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\circlequery.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\cutquery.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\download.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\expand_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\expand_selected.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\gswitchquery.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\hand.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\model.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\msetquery.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\next.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\off.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\on.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\open.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\pointer.png">
+      <Filter>Resource Files</Filter>
+    </None>
     <CustomBuild Include="poweram.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+    <None Include="images\prev.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\refresh.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\signoff.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\signon.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\signquery.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\stationmgr.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\stationrela.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\unexpand_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\unexpand_selected.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\usermgr.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\zoom_original.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\zoomin.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\zoomout.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

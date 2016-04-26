@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="logger">
-      <UniqueIdentifier>{115d6138-a662-455e-a964-b3398e2f7023}</UniqueIdentifier>
-    </Filter>
     <Filter Include="db">
       <UniqueIdentifier>{07d7241c-0364-4d59-a117-faa84d3af535}</UniqueIdentifier>
     </Filter>
@@ -38,9 +35,6 @@
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="logger.cpp">
-      <Filter>logger</Filter>
     </ClCompile>
     <ClCompile Include="clienthandler.cpp">
       <Filter>server</Filter>
@@ -94,9 +88,6 @@
   <ItemGroup>
     <ClInclude Include="defines.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="logger.h">
-      <Filter>logger</Filter>
     </ClInclude>
     <ClInclude Include="clienthandler.h">
       <Filter>server</Filter>

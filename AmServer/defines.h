@@ -15,7 +15,7 @@
 #include "ace/Log_Msg.h" 
 #include "ace/ACE.h"
 #include "ace/OS.h"
-#include "logger.h"
+#include "include/explog.h"
 
 // 包头
 const short		FRAM_TAG_HEAD = 	0x11;
@@ -63,7 +63,7 @@ const short		FRAME_TAG_END = 	0x88;
 #define		SYS_MSG_CLOSED			11		// 连接断开
 
 // 日志对象简化
-#define		LOG		App_Logger::instance()	
+#define		LOG		ExpLog::instance()//App_Logger::instance()	
 
 #define		PBNS	com::spplus::buff
 

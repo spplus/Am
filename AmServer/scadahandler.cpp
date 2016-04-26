@@ -1,6 +1,6 @@
 
 #include "scadahandler.h"
-#include "logger.h"
+
 
 ScadaHandler::ScadaHandler()
 {
@@ -41,7 +41,7 @@ int ScadaHandler::handle_input(ACE_HANDLE fd )
  	ACE_Time_Value     nowait(RECV_TIMEOUT);
 	if(fd == ACE_INVALID_HANDLE)
 	{
-		App_Logger::instance()->error("fd == ACE_INVALID_HANDLE.");
+		LOG->error("fd == ACE_INVALID_HANDLE.");
 		return -1;
 	}
 	char buff[FRAME_HEAD_LEN];
@@ -102,7 +102,7 @@ int ScadaHandler::handle_input(ACE_HANDLE fd )
 		LOG->debug("Recive data length:%d.",mb->length());
 		if (m_recvTask->putq(mb) == -1)
 		{
-			App_Logger::instance()->error("Put queue error.");
+			LOG->error("Put queue error.");
 		}
 		
 	}

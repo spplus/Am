@@ -22,7 +22,7 @@ bool TcpServerMgr::start()
 	}
 	else
 	{
-		LOG->message("server started on port:%d",port_to_listen.get_port_number());
+		LOG->message("server started on port:%d",m_port);
 
 		// 启动客户端消息循环
 		App_CMService::instance()->start();
