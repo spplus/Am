@@ -230,7 +230,7 @@ void ScadaHandler::connectionNotification(int type)
 	mb->msg_type(type);
 	if (m_recvTask->putq(mb) == -1)
 	{
-		LOG->debug("投递消息到接收队列失败");
+		LOG->debug("putq failed.");
 	}
 
 }

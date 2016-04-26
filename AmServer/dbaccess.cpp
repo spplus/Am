@@ -74,9 +74,9 @@ int DbAccess::execSql(char* sql)
 	return ret;
 }
 
-vector<map<string,string>> DbAccess::getList(char* sql)
+vector<map<string,string> > DbAccess::getList(char* sql)
 {
-	vector<map<string,string>> retList;
+	vector<map<string,string> > retList;
 	if (!conn2db())
 	{
 		return retList;
