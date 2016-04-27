@@ -12,8 +12,9 @@
 
 #include "ace/Task.h"
 #include "ace/Singleton.h"
-#include "packetparser.h"
-#include "bizbase.h"
+
+#include "include/packinterface.h"
+#include "include/bizinterface.h"
 
 class ClientMsgService :public ACE_Task<ACE_MT_SYNCH>
 {
@@ -23,7 +24,10 @@ public:
 	void		stop();
 
 	// 把消息加入到消息队列
-	int		put(ACE_Message_Block* mb);
+	int			put(ACE_Message_Block* mb);
+
+	// 设置业务处理
+	void		setContext(BizInterface* biz,PackInterface* pack);
 
 protected:
 	int		svc();
@@ -34,9 +38,9 @@ private:
 	void	parseData(ACE_Message_Block* mb);
 
 private:
-	bool m_stop;
-	BizBase			m_biz;
-	PacketParser	m_pack;
+	bool				m_stop;
+	BizInterface*		m_biz;
+	PackInterface*		m_pack;
 };
 
 typedef ACE_Singleton<ClientMsgService, ACE_Recursive_Thread_Mutex> App_CMService;

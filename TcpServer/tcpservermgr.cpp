@@ -1,11 +1,18 @@
 
-#include "defines.h"
+#include "include/defines.h"
 #include "tcpservermgr.h"
 #include "clientmsgservice.h"
-#include "confmgr.h"
+#include "conf/confmgr.h"
 
 void TcpServerMgr::init()
 {
+	LOG->start("Am_Server");
+
+	if (!App_Config::instance()->load(SERVER_CONFIG))
+	{
+		LOG->error("load server conf failed.");
+		return ;
+	}
 	// ¼ÓÔØ·þÎñÆ÷ÅäÖÃ
 	m_port = ACE_OS::atoi(App_Config::instance()->getValue(SERVER_ROOT,"ListenPort").c_str());
 	

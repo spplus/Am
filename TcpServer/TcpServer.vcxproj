@@ -11,12 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{70A278C9-C38B-4E42-8E92-789093E95BE5}</ProjectGuid>
-    <RootNamespace>AmServer</RootNamespace>
+    <ProjectGuid>{66CE5B23-EB7F-4BBC-9CC8-731E8945586A}</ProjectGuid>
+    <RootNamespace>TcpServer</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -37,19 +37,21 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(AM_ROOT)/bin/</OutDir>
+    <OutDir>$(AM_ROOT)/bin</OutDir>
+    <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ACE_ROOT);$(MYSQL_ROOT)/include;$(PB_ROOT)/include;$(AM_ROOT)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ACE_ROOT);$(AM_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;AM_LIB_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ACE_ROOT)/lib;$(MYSQL_ROOT)/lib;$(PB_ROOT)/lib;$(AM_ROOT)/lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;libmysql.lib;mysqlclient.lib;libprotobufd.lib;loggerd.lib;PacketParserd.lib;TcpServerd.lib;TcpClientd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ACE_ROOT)/lib;$(AM_ROOT)/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACEd.lib;Loggerd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(AM_ROOT)/lib/$(ProjectName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -66,26 +68,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\buff\msgbean.pb.cc" />
-    <ClCompile Include="..\common\buff\msgbody.pb.cc" />
-    <ClCompile Include="..\common\conf\confmgr.cpp" />
-    <ClCompile Include="bizbase.cpp" />
-    <ClCompile Include="dbaccess.cpp" />
-    <ClCompile Include="logincmd.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClInclude Include="..\common\conf\confmgr.h" />
+    <ClInclude Include="..\common\include\tcpserver.h" />
+    <ClInclude Include="clienthandler.h" />
+    <ClInclude Include="clientmgr.h" />
+    <ClInclude Include="clientmsgservice.h" />
+    <ClInclude Include="tcpservermgr.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\buff\msgbean.pb.h" />
-    <ClInclude Include="..\common\buff\msgbody.pb.h" />
-    <ClInclude Include="..\common\conf\confmgr.h" />
-    <ClInclude Include="..\common\include\bizinterface.h" />
-    <ClInclude Include="..\common\include\defines.h" />
-    <ClInclude Include="..\common\include\structs.h" />
-    <ClInclude Include="bizbase.h" />
-    <ClInclude Include="cmdbase.h" />
-    <ClInclude Include="commands.h" />
-    <ClInclude Include="dbaccess.h" />
-    <ClInclude Include="logincmd.h" />
+    <ClCompile Include="..\common\conf\confmgr.cpp" />
+    <ClCompile Include="clienthandler.cpp" />
+    <ClCompile Include="clientmgr.cpp" />
+    <ClCompile Include="clientmsgservice.cpp" />
+    <ClCompile Include="tcpserver.cpp" />
+    <ClCompile Include="tcpservermgr.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

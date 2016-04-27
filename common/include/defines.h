@@ -67,4 +67,11 @@ const short		FRAME_TAG_END = 	0x88;
 
 #define		PBNS	com::spplus::buff
 
+
+#ifdef AM_LIB_BUILD
+#define AM_EXPORT __declspec(dllexport)
+#else
+#define AM_EXPORT __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
+#endif
+
 #endif

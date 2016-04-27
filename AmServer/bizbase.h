@@ -7,12 +7,12 @@
 */
 /************************************************************************/
 
-#ifndef			__BIZBASE_H__
+#ifndef		__BIZBASE_H__
 #define		__BIZBASE_H__
 
-#include "structs.h"
+#include "include/bizinterface.h"
 
-class BizBase
+class BizBase	:public BizInterface
 {
 public:
 	void		exec(sClientMsg* msg);

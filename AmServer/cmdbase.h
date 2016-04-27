@@ -9,9 +9,13 @@
 #ifndef __CMDBASE_H__
 #define __CMDBASE_H__
 
-#include "defines.h"
-#include "structs.h"
-#include "clientmgr.h"
+#include "include/defines.h"
+#include "include/structs.h"
+#include "include/tcpserver.h"
+#include "include/netclient.h"
+
+#include <string>
+using namespace std;
 
 class CmdBase
 {

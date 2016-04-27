@@ -8,16 +8,16 @@
 #include "ace/SOCK_Stream.h"
 #include "ace/Svc_Handler.h"
 #include "ace/Reactor_Notification_Strategy.h"
-#include "defines.h"
+#include "include/defines.h"
 #include "recvTask.h"
 
 using namespace std;
 
-class ScadaHandler	:public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>
+class ClientHandler	:public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>
 {
 	typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> Super;
 public:
-	ScadaHandler();
+	ClientHandler();
 	virtual	int		open(void*);
 	virtual	int		handle_input(ACE_HANDLE fd = ACE_INVALID_HANDLE);
 	virtual	int		handle_close(ACE_HANDLE h, ACE_Reactor_Mask mask);

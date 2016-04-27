@@ -1,8 +1,8 @@
 #include "ace/Log_Msg.h"
 #include "ace/Reactor.h"
 #include "recvTask.h"
-#include "scadaclientmgr.h"
-#include "structs.h"
+#include "clientmgr.h"
+#include "include/structs.h"
 
 RecvTask::RecvTask()
 {
@@ -19,6 +19,11 @@ void RecvTask::start()
 	activate();
 }
 
+void RecvTask::setContext(BizInterface* biz,PackInterface* pack)
+{
+	m_biz = biz;
+	m_pack = pack;
+}
 
 void RecvTask::close()
 {
@@ -56,17 +61,17 @@ void RecvTask::ParseData(ACE_Message_Block* mb)
 	switch (mb->msg_type())
 	{
 	case SYS_MSG_CONNECTED:
-		App_ScadaClient::instance()->stopTimer();
+		App_ClientMgr::instance()->stopTimer();
 		break;
 	case SYS_MSG_CLOSED:
-		App_ScadaClient::instance()->startTimer();
+		App_ClientMgr::instance()->startTimer();
 		break;
 	default:
 		{
-			sClientMsg*	msg = m_pack.decoderS(mb->rd_ptr(),mb->length());
+			sClientMsg*	msg = m_pack->decoderS(mb->rd_ptr(),mb->length());
 
 			// 调用业务路径处理
-			m_biz.exec(msg);
+			m_biz->exec(msg);
 
 		}
 		

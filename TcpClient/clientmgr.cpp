@@ -1,8 +1,16 @@
-#include "scadaclientmgr.h"
-#include "confmgr.h"
+#include "clientmgr.h"
+#include "conf/confmgr.h"
 
-void ScadaClientMgr::init()
+void ClientMgr::init()
 {
+	LOG->start("Am_Client");
+
+	if (!App_Config::instance()->load(SERVER_CONFIG))
+	{
+		LOG->error("load server conf failed.");
+		return ;
+	}
+
 	// ¶ÁÈ¡ÅäÖÃÐÅÏ¢
 	int port = ACE_OS::atoi(App_Config::instance()->getValue(SERVER_ROOT,"ScadaPort").c_str());
 	string addr = App_Config::instance()->getValue(SERVER_ROOT,"ScadaAddr");
@@ -18,20 +26,27 @@ void ScadaClientMgr::init()
 
 }
 
-void ScadaClientMgr::start()
+void ClientMgr::setPack(PackInterface* pack)
+{
+	m_pack = pack;
+}
+
+void ClientMgr::start()
 {
 	m_rTask->start();
 	m_tcpClient.connect(m_svrAddr);
 }
 
-void ScadaClientMgr::close()
+void ClientMgr::close()
 {
 	m_tcpClient.close();
 	m_rTask->close();
+
 }
 
-int ScadaClientMgr::sendData(char* data,int length)
+int ClientMgr::sendData(char* data,int length,int msgtype)
 {
+	
 	ACE_Message_Block * mb = new ACE_Message_Block(length);
 	ACE_OS::memcpy(mb->wr_ptr(),data,length);
 	mb->wr_ptr(length);
@@ -39,7 +54,7 @@ int ScadaClientMgr::sendData(char* data,int length)
 	return m_tcpClient.send(mb);
 }
 
-void ScadaClientMgr::startTimer()
+void ClientMgr::startTimer()
 {
 	ACE_Time_Value initialDelay (1);
 	ACE_Time_Value interval (1000);
@@ -50,7 +65,7 @@ void ScadaClientMgr::startTimer()
 		interval);
 }
 
-void ScadaClientMgr::stopTimer()
+void ClientMgr::stopTimer()
 {
 	ACE_Reactor::instance()->cancel_timer(&m_kpHandler);
 }

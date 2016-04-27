@@ -5,15 +5,12 @@
 	AUTHOR:	YUANLS	
 */
 /************************************************************************/
+#ifndef __EXTLOG_H__
+#define __EXTLOG_H__
 
 #include <ace/Mutex.h>
 #include <stdarg.h>
-
-#ifdef AM_BUILD_DLL
-#define DLL_PUBLIC __declspec(dllexport)
-#else
-#define DLL_PUBLIC __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
-#endif
+#include "include/defines.h"
 
 class  ExpLog	
 {
@@ -38,3 +35,5 @@ private:
 	ACE_Mutex			m_mutex;
 	static ExpLog*		m_inst;
 };
+
+#endif

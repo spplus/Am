@@ -5,29 +5,31 @@
 		AUTHOR:	YUANLS
 */
 /************************************************************************/
-#ifndef __PACKETPARSER_H__
-#define __PACKETPARSER_H__
+#ifndef __PACKINTERFACE_H__
+#define __PACKINTERFACE_H__
 
+#include "include/structs.h"
 #include <string>
-#include "structs.h"
+
 using namespace std;
 
-class PacketParser
+class PackInterface
 {
 public:
-	
+
 	// 客户端  <--> 服务器 打包
-	sClientMsg*		decoder(char* data,int datalength);
+	virtual sClientMsg*		decoder(char* data,int datalength) = 0;
 
 	// 客户端  <--> 服务器 解包
-	char*				encoder(string data,int msgtype,int &outlengh);
+	virtual	char*			encoder(string data,int msgtype,int &outlengh) = 0;
 
 	// 服务器  <--> SCADA 打包
-	sClientMsg*		decoderS(char* data,int datalength);
+	virtual sClientMsg*		decoderS(char* data,int datalength) = 0;
 
 	// 服务器  <--> SCADA 解包
-	char*				encoderS(char* data,int datalength,int &outlengh);
+	virtual	char*			encoderS(char* data,int datalength,int &outlengh) = 0;
 
 };
+
 
 #endif

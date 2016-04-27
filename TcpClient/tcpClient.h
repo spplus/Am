@@ -3,9 +3,9 @@
 
 #include "ace/Connector.h"
 #include "ace/SOCK_Connector.h"
-#include "scadahandler.h"
+#include "clienthandler.h"
 
-typedef ACE_Connector<ScadaHandler, ACE_SOCK_CONNECTOR> SOCKConnector;
+typedef ACE_Connector<ClientHandler, ACE_SOCK_CONNECTOR> SOCKConnector;
 
 class TcpClient
 {
@@ -20,7 +20,7 @@ public:
 private:
 
 	ACE_INET_Addr	m_srvaddr;
-	ScadaHandler	m_handler;
+	ClientHandler	m_handler;
 	SOCKConnector	m_connector;
 };
 

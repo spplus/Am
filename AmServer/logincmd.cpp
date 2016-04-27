@@ -17,6 +17,6 @@ void LoginCmd::exec(sClientMsg* msg)
 	string data = "hello client";
 
 	// 6.调用返回内容到客户端
-	App_ClientMgr::instance()->sendData(msg->connectId,data,msg->type);
+	App_Server::instance()->sendData(msg->connectId,data,msg->type);
 
 }

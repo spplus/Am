@@ -1,9 +1,14 @@
 
-#include "defines.h"
+#include "include/defines.h"
 #include "clientmgr.h"
 ClientMgr::ClientMgr()
 {
 	m_connectId = 1000;
+}
+
+void ClientMgr::setPack(PackInterface* pack)
+{
+	m_pack = pack;
 }
 
 unsigned int ClientMgr::add(ClientHandler* client)
@@ -35,7 +40,7 @@ int ClientMgr::sendData(unsigned int connid,string data,int msgtype)
 {
 	// 打包数据
 	int outLength = 0;
-	char * buff = m_pack.encoder(data,msgtype,outLength);
+	char * buff = m_pack->encoder(data,msgtype,outLength);
 	
 	ClientHandler* handler = get(connid);
 	if (handler != NULL)

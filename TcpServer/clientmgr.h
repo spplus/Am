@@ -14,7 +14,7 @@
 
 #include "ace/Singleton.h"
 #include "clienthandler.h"
-#include "packetparser.h"
+#include "include/packinterface.h"
 
 using namespace std;
 
@@ -30,13 +30,14 @@ public:
 	void del(unsigned int connid);
 	ClientHandler* get(unsigned int connid);
 
+	void		setPack(PackInterface* pack);
 	// 发送数据
 	int			sendData(unsigned int connid,string data,int msgtype);
 
 private:
 
 	// 数据打包
-	PacketParser	m_pack;
+	PackInterface*	m_pack;
 
 	// 连接ID，递增
 	unsigned int	m_connectId;

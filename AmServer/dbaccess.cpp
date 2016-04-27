@@ -1,6 +1,6 @@
 #include "dbaccess.h"
-#include "defines.h"
-#include "confmgr.h"
+#include "include/defines.h"
+#include "conf/confmgr.h"
 
 DbAccess::DbAccess()
 {
@@ -14,6 +14,13 @@ DbAccess::DbAccess()
 
 void DbAccess::init()
 {
+	// 加载服务器配置
+	if (!App_Config::instance()->load(SERVER_CONFIG))
+	{
+		LOG->error("load server conf failed.");
+		return ;
+	}
+
 	// 加载数据库配置
 	m_dbhost = App_Config::instance()->getValue(DB_ROOT,"DBAddr");
 	m_dbname =App_Config::instance()->getValue(DB_ROOT,"DBPort");

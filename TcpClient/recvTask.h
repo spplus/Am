@@ -2,8 +2,8 @@
 #ifndef __RECVTASK_H__
 #define __RECVTASK_H__
 #include "ace/Task.h"
-#include "packetparser.h"
-#include "bizbase.h"
+#include "include/bizinterface.h"
+#include "include/packetparser.h"
 
 class RecvTask	:public ACE_Task<ACE_MT_SYNCH>
 {
@@ -21,15 +21,17 @@ public:
 	// 线程入口
 	int		svc();
 
+	void	setContext(BizInterface* biz,PackInterface* pack);
+
 private:
 	// 解析数据
 	void	ParseData(ACE_Message_Block* mb);
 
 private:
 	
-	BizBase			m_biz;
-	bool			m_stop;
-	PacketParser	m_pack;
+	BizInterface*		m_biz;
+	bool				m_stop;
+	PackInterface*		m_pack;
 };
 
 

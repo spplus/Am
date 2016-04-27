@@ -10,7 +10,7 @@ bool TcpClient::connect(ACE_INET_Addr svrAddr)
 
 bool TcpClient::connect()
 {
-	ScadaHandler* pc = &m_handler;
+	ClientHandler* pc = &m_handler;
 	return m_connector.connect(pc,m_srvaddr) == -1?false:true;
 }
 

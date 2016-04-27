@@ -2,7 +2,7 @@
 #include "ace/OS_NS_unistd.h"
 #include "clientmsgservice.h"
 #include "include/commands.h"
-#include "defines.h"
+#include "include/defines.h"
 
 void ClientMsgService::start()
 {
@@ -21,6 +21,12 @@ void ClientMsgService::stop()
 int ClientMsgService::put(ACE_Message_Block* mb)
 {
 	return putq(mb);
+}
+
+void ClientMsgService::setContext(BizInterface* biz,PackInterface* pack)
+{
+	m_biz = biz;
+	m_pack = pack;
 }
 
 int ClientMsgService::svc()
@@ -43,13 +49,24 @@ int ClientMsgService::svc()
 
 void ClientMsgService::parseData(ACE_Message_Block* mb)
 {
-	if (mb->length() > MAX_PACKET_LEN)
+	if (m_biz == NULL)
+	{
+		LOG->error("bizinterface can not be null");
+		return;
+	}
+	if (m_pack == NULL)
+	{
+		LOG->error("packinterface can not be null");
+		return;
+	}
+
+	if (mb->length() > MAX_PACKET_LEN )
 	{
 		LOG->error("Invalid data length %d",mb->length());
 		return;
 	}
 	// 解包
-	sClientMsg* msg = m_pack.decoder(mb->rd_ptr(),mb->length());
+	sClientMsg* msg = m_pack->decoder(mb->rd_ptr(),mb->length());
 
 	if (msg == NULL)
 	{
@@ -60,7 +77,7 @@ void ClientMsgService::parseData(ACE_Message_Block* mb)
 	msg->connectId = mb->msg_type();
 
 	// 调用业务逻辑处理
-	m_biz.exec(msg);
+	m_biz->exec(msg);
 
 	delete msg;
 }
